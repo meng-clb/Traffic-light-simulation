@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>红绿灯模拟</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            text-decoration: none;
+            box-sizing: border-box;
+        }
+
+        .row {
+            position: absolute;
+            top: 300px;
+            width: 100%;
+            height: 300px;
+            background-color: pink;
+            line-height: 200px;
+        }
+
+        .col {
+            position: absolute;
+            left: 50%;
+            margin-left: -150px;
+            width: 300px;
+            height: 800px;
+            background-color: pink;
+        }
+
+        .content {
+            position: absolute;
+            left: 50%;
+            top: 300px;
+            margin-left: -150px;
+            width: 300px;
+            height: 300px;
+            background-color: #e88769;
+            text-align: center;
+            line-height: 200px;
+        }
+
+        .r {
+            width: 60px;
+            height: 150px;
+            border: 1px solid transparent;
+            margin-top: 75px;
+            border-radius: 30px;
+            background-color: #74e5e5;
+        }
+
+        li {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            line-height: 40px;
+            text-align: center;
+        }
+
+        .r li {
+            margin-left: 10px;
+            margin-top: 7px;
+        }
+
+        .l {
+            width: 150px;
+            height: 60px;
+            border: 1px solid transparent;
+            margin-left: 75px;
+            border-radius: 30px;
+            background-color: #74e5e5;
+        }
+
+        .l li {
+            float: left;
+            margin-top: 10px;
+            margin-left: 7px;
+        }
+
+        .red_s {
+            background-color: #ee0905;
+        }
+
+        .red_end {
+            background-color: #ac0702;
+        }
+
+        .yellow_s {
+            background-color: #eeed77;
+        }
+
+        .yellow_end {
+            background-color: #b3b34f;
+        }
+
+        .green_s {
+            background-color: #a5f04a;
+        }
+
+        .green_end {
+            background-color: #54762f;
+        }
+
+        .box {
+            position: absolute;
+            top: 50px;
+            left: 100px;
+        }
+
+        .Box {
+            position: absolute;
+            top: 100px;
+            left: 50px;
+        }
+
+        .big {
+            position: absolute;
+            top: 50px;
+            left: 50px;
+        }
+
+        .small {
+            position: absolute;
+            top: 100px;
+            left: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <button class="big">点击修改红灯和绿灯的时长</button>
+    <button class="small">点击修改黄灯的时长</button>
+    <div class="row">
+        <div class="box"></div>
+    </div>
+    <div class="col">
+        <div class="Box"></div>
+    </div>
+    <div class="content">
+        <ul class="r">
+            <li class="red_end">30</li>
+            <li class="yellow_end"></li>
+            <li class="green_end"></li>
+        </ul>
+        <ul class="l">
+            <li class="red_end"></li>
+            <li class="yellow_end"></li>
+            <li class="green_end"></li>
+        </ul>
+    </div>
+
+    <script>
+        let big = document.querySelector('.big');
+        let small = document.querySelector('.small');
+        let NS = document.querySelector('.l');
+        let WE = document.querySelector('.r');
+        let box = document.querySelector('.box');
+        let Box = document.querySelector('.Box');
+
+
+        // 倒计时模块
+        var longNum = 10;
+        var shortNum = 3;
+        big.addEventListener('click', function () {
+            let inputNum = prompt('请输入你想设置的秒数:');
+            longNum = inputNum == '' ? longNum : inputNum;
+        })
+        small.addEventListener('click', function () {
+            let inputNum = prompt('请输入你想设置的秒数:');
+            shortNum = inputNum == '' ? longNum : inputNum;
+        })
+        green();
+        Green = setInterval(green, 1000);
+
+        function green() {
+            NS.children[2].className = 'green_s';
+            point(Box);
+            NS.children[2].innerHTML = longNum;
+            WE.children[0].className = 'red_s';
+            caveat(box);
+            WE.children[0].innerHTML = longNum;
+            if (longNum == -1) {
+                clearInterval(Green);
+                NS.children[2].className = 'green_end';
+                del(Box);
+                NS.children[2].innerHTML = '';
+                WE.children[0].className = 'red_end';
+                del(box);
+                WE.children[0].innerHTML = '';
+                longNum = 10;
+                NS.children[1].className = 'yellow_s';
+                WE.children[1].className = 'yellow_s';
+                yellow();
+                Yellow = setInterval(yellow, 1000);
+                remind(box);
+                remind(Box);
+            }
+            longNum--;
+        }
+
+        function yellow() {
+            NS.children[1].innerHTML = shortNum;
+            WE.children[1].innerHTML = shortNum;
+            if (shortNum == -1) {
+                del(box);
+                del(Box);
+                clearInterval(Yellow);
+                NS.children[1].className = 'yellow_end';
+                NS.children[1].innerHTML = '';
+                WE.children[1].className = 'yellow_end';
+                WE.children[1].innerHTML = '';
+                shortNum = 3;
+                NS.children[0].className = 'red_s';
+                caveat(Box);
+                WE.children[2].className = 'green_s';
+                point(box);
+                red();
+                Red = setInterval(red, 1000);
+            }
+            shortNum--;
+        }
+
+        function red() {
+            NS.children[0].innerHTML = longNum;
+            WE.children[2].innerHTML = longNum;
+            if (longNum == -1) {
+                clearInterval(Red);
+                NS.children[0].className = 'red_end';
+                del(Box);
+                NS.children[0].innerHTML = '';
+                WE.children[2].className = 'green_end';
+                del(box);
+                WE.children[2].innerHTML = '';
+                longNum = 10;
+                NS.children[2].className = 'green_s';
+                WE.children[2].className = 'green_end';
+                green();
+                Green = setInterval(green, 1000);
+            }
+            longNum--;
+        }
+
+        function caveat(concent) {
+            concent.style.color = 'red';
+            concent.innerHTML = '闯红灯,等着大家都去你家吃席';
+        }
+
+        function remind(concent) {
+            concent.style.color = 'yellow';
+            concent.innerHTML = '黄灯了,还没过去的抓紧时间,马上车就来撞你了';
+        }
+
+        function point(concent) {
+            concent.style.color = 'green';
+            concent.innerHTML = '绿灯也要注意安全哟!';
+        }
+
+        function del(concent) {
+            concent.innerHTML = '';
+        }
+    </script>
+</body>
+
+</html>
